@@ -1,0 +1,25 @@
+- Visualisation du chiffre d'affaire sur le site web
+    - Sur tests-design-consultation-ca, garder le format des jauges (voir "par mois")
+    - Avec un onglet "Par séance"
+        - mettre une carte par numéro de séance
+        - jauge année N (avec rappel de la date)
+        - jauge année N-1 (avec rappel de la date)
+        - affichage du delta en pourcentage
+    - Avec un onglet "Cumul saison"
+        - jauge année N (avec rappel du numéro de séance en cours)
+        - jauge année N-1 (au même numéro de séance)
+        - affichage du delta des jauges ci-dessus en pourcentage
+        - Carte "Total année N-1" et "Total en cours année N" avec pourcentage atteint (peut au final être supérieur à 100%)
+
+- Fichier Google Sheet : Produits
+    - Ajouter "Prix d'achat" et "Prix de vente" sur la feuille "Produits"
+        - Attention aux effets de bord sur la page de saisie des ventes (vérifier les scripts)
+    - Pouvoir exporter en pdf (pour mail et impression) la liste des produits avec prix d'achat et prix de vente
+        - Voir fichier "Confiserie Ventes Produits - Sauvegarde 2026-08-11 - Tests export produits" + voir Gemini
+        - Voir si possible de faire un export sur chaque onglet "Produits" (car il y aura un onglet "Produits" par année)
+
+- Fichier Google Sheet : CA
+    - Ajouter la saisie du CA sur le formulaire de saisie des ventes
+    - Enregistrer dans une feuille (un CA par date et par caisse)
+        - Toutes années dans la même feuille afin de pouvoir consulter l'ensemble sur le site web, et faire des comparaisons
+        - Cette feuille sera exportée en CSV pour affichage sur le site web

@@ -1,0 +1,21 @@
+- Le fichier Google Sheet contient :
+    - Une feuille "Produits" (avec prix d'achat et prix de vente) par an (car cela change chaque année, et n'est pas consulté sur le site web)
+    - La feuille "Ventes" contient toutes les ventes de toutes les années (afin de pouvoir consulter l'ensemble sur le site web)
+    - La feuille "CA" contient tous les CA de toutes les années (afin de pouvoir consulter l'ensemble sur le site web)
+- Pas de problème de performances au niveau du chargement des données :
+    - L'export CSV de l'API GViz est rapide mais possède des contraintes techniques d'exportation :
+        - Limite stricte de Google Sheets : Une feuille de calcul ne peut dépasser 10 millions de cellules (ou 100 Mo sur le fichier source).
+        - Taille du fichier CSV : L'export GViz commence à poser problème à partir de 10 à 15 Mo de texte brut.
+        - Temps de téléchargement (Network) :
+            - Moins de 2 Mo (~20 000 à 50 000 lignes) : Quasi instantané (< 1 à 2 secondes avec une bonne connexion).
+            - 5 à 10 Mo (~100 000 lignes) : Le téléchargement prend 3 à 8 secondes. L'utilisateur commence à ressentir une lourdeur.
+            - Au-delà de 15 Mo : L'API GViz peut déclencher des timeouts (erreurs 503/504) côté Google lors de la génération du CSV à la volée.
+    - Parsing CSV vers JSON : Transformer 10 Mo de CSV en objets JS prend 200 ms à 1 seconde sur un ordinateur moderne, mais peut complètement figer un smartphone d'entrée de gamme.
+    - Filtrage d'objets JSON en mémoire :
+        - Filtrer un tableau de 100 000 objets JS prend en général moins de 20 à 50 ms.
+        - Vous pouvez filtrer sans problème jusqu'à 300 000 à 500 000 lignes en mémoire sans dégradation visible pour l'utilisateur.
+    - Limite d'affichage sans pagination : 1000 lignes
+    => Avec le volume par saison, pas de problème pour au moins 5 ans. Il sera alors possible de purger des données anciennes et conserver sans problème le système actuel.
+
+- A Faire à chaque début de saison
+    - Sauvegarder les produits de l'année N-1 (dupliquer la feuille) et garder la feuille "Produits" pour l'année en cours (car sinon il faut changer les scripts chaque année)
