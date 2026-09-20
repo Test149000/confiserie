@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+	<meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confiserie - Ventes et produits</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <!--script src="datamanager.js"></script-->
+    <script src="datamanager.js"></script>
+    <script src="app.js"></script>
+
+    <style>
+        .accordion-toggle i { transition: transform 0.2s ease; }
+        .accordion-closed i { transform: rotate(-90deg); }
+        .category-block.dragging {
+            opacity: 0.5;
+            border: 2px dashed #3b82f6;
+            background-color: #eff6ff;
+        }
+		.header-onglet {
+			display: flex;
+            align-items: center;
+		}
+		/* La nouvelle div absorbe tout l'espace à sa gauche et se cale à droite */
+		.conteneur-actions {
+			margin-left: auto; 
+			display: flex;
+			gap: 10px; /* Espace de 10px entre les futurs boutons à l'intérieur */
+		}
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased text-gray-800">
+	<div style="display:none;">
+        <input type="text" id="mail_address" value="">
+    </div>
+	
+    <nav class="bg-blue-600 text-white shadow-md sticky top-0 z-50 p-4">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <i class="fas fa-table"></i> Confiserie
+            </h1>
+            <!--div class="flex bg-blue-700 rounded-lg p-1 text-sm font-semibold w-full sm:w-auto justify-center gap-1">
+                <button id="btnTabVentes" onclick="switchTab('ventes')" class="px-4 py-2 rounded-md bg-white text-blue-600 transition text-xs sm:text-sm shadow-sm">
+                    <i class="fas fa-shopping-cart mr-1"></i>Ventes
+                </button>
+                <button id="btnTabProduits" onclick="switchTab('produits')" class="px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm">
+                    <i class="fas fa-tags mr-1"></i>Produits
+                </button>
+                <button id="btnTabStats" onclick="switchTab('stats')" class="px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm">
+                    <i class="fas fa-chart-line mr-1"></i>Statistiques
+                </button>
+            </div-->
+            <div id="navButtons" class="flex bg-blue-700 rounded-lg p-1 text-sm font-semibold w-full sm:w-auto justify-center gap-1">
+                <button id="btnTabVentes" onclick="switchTab('ventes')" class="px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm">
+                    <i class="fas fa-shopping-cart mr-1"></i>Ventes
+                </button>
+                <button id="btnTabProduits" onclick="switchTab('produits')" class="px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm">
+                    <i class="fas fa-tags mr-1"></i>Produits
+                </button>
+                <button id="btnTabStats" onclick="switchTab('stats')" class="px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm">
+                    <i class="fas fa-chart-line mr-1"></i>Statistiques
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 max-w-5xl mt-4">
+
+        <section id="tabVentes" class="space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm space-y-3">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-gray-100 pb-2">
+                    <h2 class="text-sm font-bold uppercase text-gray-500 flex items-center gap-2">
+                        <i class="fas fa-filter text-blue-500"></i> Afficher à partir de :
+                    </h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+                    <div>
+                        <label class="block text-gray-500 mb-1 font-medium">Date de début</label>
+                        <input type="date" id="ventesDateDebutS" onchange="refreshActiveTab()" class="w-full border p-2 rounded-lg focus:outline-blue-500 bg-gray-50">
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden p-4">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left text-xs">
+                        <thead class="bg-gray-100 text-gray-700 font-semibold uppercase">
+                            <tr id="ventesHeaderRow"></tr>
+                        </thead>
+                        <tbody id="ventesBody" class="divide-y divide-gray-100"></tbody>
+                        <tfoot class="bg-blue-50 font-bold text-gray-900 border-t border-blue-100">
+                            <tr id="ventesFooterRow"></tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="tabProduits" class="hidden space-y-4">
+			<div class="header-onglet">
+				<div class="conteneur-actions">
+					<button onclick="exportProductsToPDF()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-3 rounded-lg shadow-sm transition text-xs whitespace-nowrap flex items-center gap-1.5">
+						<i class="fas fa-file-pdf"></i> Exporter en PDF
+					</button>
+				</div>
+			</div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-folder-plus text-blue-500 text-lg"></i>
+                    <div>
+                        <h2 class="text-xs font-bold uppercase text-gray-700">Créer une nouvelle catégorie de produits</h2>
+                        <p class="text-xxs text-gray-400">Ajoute une catégorie vide prête à recevoir des produits.</p>
+                        <p class="text-xxs text-gray-400">Glissez par le titre pour réordonner.</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center w-full sm:w-auto gap-2">
+                    <input type="text" id="newCategoryNameTop" placeholder="Ex: Boissons Fraîches..." class="border p-2 rounded-lg text-xs focus:outline-blue-500 bg-white w-full sm:w-48">
+                    <button onclick="createNewEmptyCategory()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-3 rounded-lg shadow-sm transition text-xs whitespace-nowrap">
+                        <i class="fas fa-plus mr-1"></i> Créer la catégorie
+                    </button>
+                </div>
+            </div>
+            
+            <div id="categoriesContainer" class="space-y-4"></div>
+        </section>
+
+        <section id="tabStats" class="hidden space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm space-y-3">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-gray-100 pb-2">
+                    <h2 class="text-sm font-bold uppercase text-gray-500 flex items-center gap-2">
+                        <i class="fas fa-filter text-blue-500"></i> Filtres et Période de Recherche
+                    </h2>
+                    <button onclick="exportStatsToPDF()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1.5 px-3 rounded-lg shadow-sm transition text-xs flex items-center gap-2 self-end sm:self-auto">
+                        <i class="fas fa-file-pdf text-sm"></i> Exporter en PDF
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+                    <div>
+                        <label class="block text-gray-500 mb-1 font-medium">Date de début</label>
+                        <input type="date" id="filterDateDebutS" onchange="refreshActiveTab()" class="w-full border p-2 rounded-lg focus:outline-blue-500 bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 mb-1 font-medium">Date de fin</label>
+                        <input type="date" id="filterDateFinS" onchange="refreshActiveTab()" class="w-full border p-2 rounded-lg focus:outline-blue-500 bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 mb-1 font-medium">Filtrer par Caisse</label>
+                        <select id="filterCaisseS" onchange="refreshActiveTab()" class="w-full border p-2 rounded-lg focus:outline-blue-500 bg-gray-50">
+                            <option value="">Toutes les caisses (Détaillé)</option>
+                            <option value="regroupe">Toutes les caisses regroupées</option>
+                            <option value="1">Caisse 1</option>
+                            <option value="2">Caisse 2</option>
+                            <option value="3">Caisse 3</option>
+                            <option value="4">Caisse 4</option>
+                            <option value="5">Caisse 5</option>
+                            <option value="6">Caisse 6</option>
+                            <option value="7">Caisse 7</option>
+                            <option value="8">Caisse 8</option>
+                            <option value="9">Caisse 9</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 mb-1 font-medium">Filtrer par Catégorie</label>
+                        <select id="filterCategoryS" onchange="onCategoryFilterChange()" class="w-full border p-2 rounded-lg focus:outline-blue-500 bg-gray-50 text-gray-900">
+                            <option value="">Toutes les catégories</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 mb-1 font-medium">Filtrer par Produit</label>
+                        <select id="filterProductS" onchange="refreshActiveTab()" class="w-full border p-2 rounded-lg focus:outline-blue-500 bg-gray-50">
+                            <option value="">Tous les produits</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-gray-100 flex items-center">
+                    <label class="inline-flex items-center text-xs font-semibold text-blue-700 cursor-pointer bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">
+                        <input type="checkbox" id="filterRegroupeDatesS" onchange="refreshActiveTab()" class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mr-2">
+                        <i class="fas fa-cubes mr-1.5 text-blue-500"></i> Regrouper les dates et faire la somme totale par produit
+                    </label>
+                </div>
+            </div>
+
+            <div id="statsCategoriesContainer" class="space-y-6"></div>
+            
+            <div id="statsGeneralTotalBlock" class="bg-blue-600 text-white p-4 rounded-xl shadow-md flex justify-between items-center text-sm font-bold hidden">
+                <span>TOTAL GLOBAL :</span>
+                <div class="flex gap-6 font-mono">
+                    <span id="globalTotalQty">Quantité : 0</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

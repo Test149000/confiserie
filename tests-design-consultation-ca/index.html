@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr" class="bg-slate-50 font-sans text-slate-800">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi des Ventes Association</title>
+    <!-- Dependencies existantes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="pb-20 max-w-md mx-auto min-h-screen bg-slate-50 shadow-lg relative">
+
+    <!-- Header App -->
+    <header class="bg-indigo-700 text-white p-4 sticky top-0 z-20 shadow-md">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="font-bold text-lg leading-tight">Ventes Vente/Asso</h1>
+                <p class="text-xs text-indigo-200">Saison 2026-2027 vs 2025-2026</p>
+            </div>
+            <button onclick="toggleModal('modal-add')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-2 rounded-lg font-semibold flex items-center gap-1 shadow">
+                <i class="fa-solid fa-plus"></i> Saisie
+            </button>
+        </div>
+
+        <!-- Navigation par Onglets (Tabs) -->
+        <nav class="flex bg-indigo-800/60 p-1 rounded-xl mt-3 text-xs font-semibold">
+            <button id="tab-btn-weekends" onclick="switchTab('weekends')" class="flex-1 py-2 rounded-lg text-center bg-white text-indigo-900 shadow transition-all">
+                Week-ends
+            </button>
+            <button id="tab-btn-mois" onclick="switchTab('mois')" class="flex-1 py-2 rounded-lg text-center text-indigo-100 transition-all">
+                Par Mois
+            </button>
+            <button id="tab-btn-saison" onclick="switchTab('saison')" class="flex-1 py-2 rounded-lg text-center text-indigo-100 transition-all">
+                Saison
+            </button>
+        </nav>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="p-4 space-y-4">
+
+        <!-- ================= ONGLET 1 : WEEK-ENDS ================= -->
+        <section id="view-weekends" class="space-y-4">
+            <!-- KPI Globaux Week-end -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Cumul N (12 W-E)</p>
+                    <p class="text-lg font-bold text-slate-800">14 250 €</p>
+                    <p class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-0.5">
+                        <i class="fa-solid fa-arrow-up text-[10px]"></i> +12.4% <span class="text-slate-400 font-normal">vs N-1</span>
+                    </p>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-xs text-slate-500 font-medium">Moyenne / W-E</p>
+                    <p class="text-lg font-bold text-slate-800">1 187 €</p>
+                    <p class="text-xs font-semibold text-emerald-600 flex items-center gap-1 mt-0.5">
+                        <i class="fa-solid fa-arrow-up text-[10px]"></i> +131 €
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Historique par Week-End</h2>
+                <span class="text-xs text-slate-400">Ordre antéchronologique</span>
+            </div>
+
+            <!-- Liste des cartes Week-ends -->
+            <div class="space-y-3">
+
+                <!-- Carte Week-end 1 (Hausse) -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <div>
+                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-wide">WE #12</span>
+                            <p class="text-sm font-semibold text-slate-800">19 & 20 Septembre 2026</p>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-caret-up"></i> +18.5%
+                        </span>
+                    </div>
+                    <div class="p-3 grid grid-cols-2 gap-2 text-center divide-x divide-slate-100">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-medium uppercase">Saison en cours (N)</p>
+                            <p class="text-base font-bold text-slate-800">1 420 €</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-medium uppercase">Même WE (N-1)</p>
+                            <p class="text-base font-semibold text-slate-500">1 198 €</p>
+                        </div>
+                    </div>
+                    <div class="px-3 py-2 bg-slate-50 flex justify-between text-xs text-slate-500 border-t border-slate-100">
+                        <span>Écart brut : <strong class="text-emerald-600">+222 €</strong></span>
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium text-xs">Détails <i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                    </div>
+                </div>
+
+                <!-- Carte Week-end 2 (Baisse) -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <div>
+                            <span class="text-xs font-bold text-indigo-600 uppercase tracking-wide">WE #11</span>
+                            <p class="text-sm font-semibold text-slate-800">12 & 13 Septembre 2026</p>
+                        </div>
+                        <span class="bg-rose-100 text-rose-800 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-caret-down"></i> -6.2%
+                        </span>
+                    </div>
+                    <div class="p-3 grid grid-cols-2 gap-2 text-center divide-x divide-slate-100">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-medium uppercase">Saison en cours (N)</p>
+                            <p class="text-base font-bold text-slate-800">980 €</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-medium uppercase">Même WE (N-1)</p>
+                            <p class="text-base font-semibold text-slate-500">1 045 €</p>
+                        </div>
+                    </div>
+                    <div class="px-3 py-2 bg-slate-50 flex justify-between text-xs text-slate-500 border-t border-slate-100">
+                        <span>Écart brut : <strong class="text-rose-600">-65 €</strong></span>
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium text-xs">Détails <i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= ONGLET 2 : MOIS ================= -->
+        <section id="view-mois" class="space-y-4 hidden">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Comparatif Mensuel</h2>
+            
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <!-- Mois Septembre -->
+                <div>
+                    <div class="flex justify-between text-sm font-semibold mb-1">
+                        <span>Septembre</span>
+                        <span class="text-emerald-600 font-bold">+8.4%</span>
+                    </div>
+                    <!-- Barre de comparaison visuelle -->
+                    <div class="space-y-1">
+                        <div class="flex items-center text-xs">
+                            <span class="w-8 text-slate-400">N</span>
+                            <div class="flex-1 bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div class="bg-indigo-600 h-full rounded-full" style="width: 75%;"></div>
+                            </div>
+                            <span class="w-16 text-right font-bold">2 400 €</span>
+                        </div>
+                        <div class="flex items-center text-xs">
+                            <span class="w-8 text-slate-400">N-1</span>
+                            <div class="flex-1 bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div class="bg-slate-300 h-full rounded-full" style="width: 68%;"></div>
+                            </div>
+                            <span class="w-16 text-right text-slate-500">2 214 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-100">
+
+                <!-- Mois Octobre -->
+                <div>
+                    <div class="flex justify-between text-sm font-semibold mb-1">
+                        <span>Octobre</span>
+                        <span class="text-emerald-600 font-bold">+15.2%</span>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center text-xs">
+                            <span class="w-8 text-slate-400">N</span>
+                            <div class="flex-1 bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div class="bg-indigo-600 h-full rounded-full" style="width: 90%;"></div>
+                            </div>
+                            <span class="w-16 text-right font-bold">3 100 €</span>
+                        </div>
+                        <div class="flex items-center text-xs">
+                            <span class="w-8 text-slate-400">N-1</span>
+                            <div class="flex-1 bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div class="bg-slate-300 h-full rounded-full" style="width: 78%;"></div>
+                            </div>
+                            <span class="w-16 text-right text-slate-500">2 690 €</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ONGLET 3 : SAISON ================= -->
+        <section id="view-saison" class="space-y-4 hidden">
+            <!-- Progression Globale -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-center space-y-3">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Cumul Saison Sept. à Sept.</p>
+                <div class="text-3xl font-extrabold text-indigo-900">14 250 €</div>
+                
+                <div class="bg-slate-100 p-3 rounded-lg flex justify-around">
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-medium">Cumul N-1 à date</p>
+                        <p class="text-sm font-bold text-slate-600">12 678 €</p>
+                    </div>
+                    <div class="border-r border-slate-200"></div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-medium">Progression</p>
+                        <p class="text-sm font-bold text-emerald-600">+1 572 € (+12.4%)</p>
+                    </div>
+                </div>
+
+                <!-- Jauge de progression vs objectif annuel (optionnel) -->
+                <div class="space-y-1 text-left pt-2">
+                    <div class="flex justify-between text-xs font-medium">
+                        <span class="text-slate-500">Objectif Saison (30 000 €)</span>
+                        <span class="text-indigo-600 font-bold">47.5%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                        <div class="bg-indigo-600 h-full rounded-full" style="width: 47.5%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal d'ajout de vente rapide -->
+    <div id="modal-add" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-100">
+                <h3 class="font-bold text-slate-800">Saisir les ventes du WE</h3>
+                <button onclick="toggleModal('modal-add')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <form class="space-y-3" onsubmit="event.preventDefault(); toggleModal('modal-add');">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Date du Samedi</label>
+                    <input type="date" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Ventes Samedi (€)</label>
+                        <input type="number" placeholder="0.00" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Ventes Dimanche (€)</label>
+                        <input type="number" placeholder="0.00" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-lg shadow hover:bg-indigo-700 transition-colors mt-2">
+                    Enregistrer le week-end
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de gestion d'affichage -->
+    <script>
+        function switchTab(tab) {
+            // Cacher toutes les vues
+            document.getElementById('view-weekends').classList.add('hidden');
+            document.getElementById('view-mois').classList.add('hidden');
+            document.getElementById('view-saison').classList.add('hidden');
+
+            // Reinitialiser les styles des boutons
+            const tabs = ['weekends', 'mois', 'saison'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-btn-${t}`);
+                btn.className = "flex-1 py-2 rounded-lg text-center text-indigo-100 transition-all";
+            });
+
+            // Afficher la vue active et styliser son bouton
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tab}`);
+            activeBtn.className = "flex-1 py-2 rounded-lg text-center bg-white text-indigo-900 shadow transition-all font-bold";
+        }
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
