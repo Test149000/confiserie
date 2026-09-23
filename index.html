@@ -38,15 +38,21 @@
 	<div style="display:none;">
         <input type="text" id="mail_address" value="">
     </div>
-	
     <nav class="bg-blue-600 text-white shadow-md sticky top-0 z-50 p-4">
-        <div class="container mx-auto flex flex-col sm:flex-row justify-center items-center gap-4">
-            <h1 class="text-xl font-bold flex items-center gap-2 text-center">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h1 class="text-xl font-bold flex items-center gap-2">
                 Au Casse-Croûte Puyfolais
             </h1>
+            <div class="flex bg-blue-700 rounded-lg p-1 text-sm font-semibold w-full sm:w-auto justify-center gap-1">
+                <button id="btnTabStats" onclick="switchTab('stats')" class="px-4 py-2 rounded-md bg-white text-blue-600 transition text-xs sm:text-sm shadow-sm">
+                    <i class="fas fa-shopping-cart mr-1"></i>Ventes
+                </button>
+                <button id="btnTabCA" onclick="switchTab('ca')" class="px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm">
+                    <i class="fas fa-chart-line mr-1"></i>CA
+                </button>
+            </div>
         </div>
     </nav>
-
     <main class="container mx-auto p-4 max-w-5xl mt-4">
         <section id="tabStats" class="space-y-4">
             <div class="bg-white p-4 rounded-xl shadow-sm space-y-3">
@@ -105,6 +111,16 @@
                 <span>TOTAL GLOBAL :</span>
                 <div class="flex gap-6 font-mono">
                     <span id="globalTotalQty">Quantité : 0</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="tabCA" class="space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm space-y-3">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-gray-100 pb-2">
+                    <h2 class="text-sm font-bold uppercase text-gray-500 flex items-center gap-2">
+                        <i class="fas fa-filter text-blue-500"></i> TODO
+                    </h2>
                 </div>
             </div>
         </section>

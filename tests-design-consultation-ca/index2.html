@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Au Casse-Croûte Puyfolais - Suivi CA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        let currentTab = 'ca';
+
+        // Simulation des données de la saison (38 dates)
+        // Modifiez les dates et montants selon vos données réelles
+        const seasonData = [
+            { id: 1, dateN: '03/05/2025', dateN1: '04/05/2024', caN: 1450, caN1: 1280, completed: true },
+            { id: 2, dateN: '10/05/2025', dateN1: '11/05/2024', caN: 1820, caN1: 1650, completed: true },
+            { id: 3, dateN: '17/05/2025', dateN1: '18/05/2024', caN: 1690, caN1: 1710, completed: true },
+            { id: 4, dateN: '24/05/2025', dateN1: '25/05/2024', caN: 2100, caN1: 1890, completed: true },
+            { id: 5, dateN: '31/05/2025', dateN1: '01/06/2024', caN: 1950, caN1: 1980, completed: true },
+            { id: 6, dateN: '07/06/2025', dateN1: '08/06/2024', caN: 2300, caN1: 2050, completed: true },
+            { id: 7, dateN: '14/06/2025', dateN1: '15/06/2024', caN: 2150, caN1: 2100, completed: true },
+            { id: 8, dateN: '21/06/2025', dateN1: '22/06/2024', caN: 2480, caN1: 2200, completed: true },
+            { id: 9, dateN: '28/06/2025', dateN1: '29/06/2024', caN: 2600, caN1: 2350, completed: true },
+            { id: 10, dateN: '05/07/2025', dateN1: '06/07/2024', caN: 2850, caN1: 2600, completed: true },
+            { id: 11, dateN: '12/07/2025', dateN1: '13/07/2024', caN: 3100, caN1: 2900, completed: true },
+            { id: 12, dateN: '19/07/2025', dateN1: '20/07/2024', caN: 3250, caN1: 2950, completed: true },
+            { id: 13, dateN: '26/07/2025', dateN1: '27/07/2024', caN: 0, caN1: 3100, completed: false, isNext: true },
+            { id: 14, dateN: '02/08/2025', dateN1: '03/08/2024', caN: 0, caN1: 3050, completed: false },
+            { id: 15, dateN: '09/08/2025', dateN1: '10/08/2024', caN: 0, caN1: 3200, completed: false },
+            { id: 16, dateN: '16/08/2025', dateN1: '17/08/2024', caN: 0, caN1: 3150, completed: false },
+            { id: 17, dateN: '23/08/2025', dateN1: '24/08/2024', caN: 0, caN1: 2800, completed: false },
+            { id: 18, dateN: '30/08/2025', dateN1: '31/08/2024', caN: 0, caN1: 2650, completed: false },
+            { id: 19, dateN: '06/09/2025', dateN1: '07/09/2024', caN: 0, caN1: 2400, completed: false },
+            { id: 20, dateN: '13/09/2025', dateN1: '14/09/2024', caN: 0, caN1: 2200, completed: false },
+            { id: 21, dateN: '20/09/2025', dateN1: '21/09/2024', caN: 0, caN1: 2050, completed: false },
+            { id: 22, dateN: '27/09/2025', dateN1: '28/09/2024', caN: 0, caN1: 1900, completed: false },
+            { id: 23, dateN: '04/10/2025', dateN1: '05/10/2024', caN: 0, caN1: 1750, completed: false },
+            { id: 24, dateN: '11/10/2025', dateN1: '12/10/2024', caN: 0, caN1: 1600, completed: false },
+            { id: 25, dateN: '18/10/2025', dateN1: '19/10/2024', caN: 0, caN1: 1550, completed: false },
+            { id: 26, dateN: '25/10/2025', dateN1: '26/10/2024', caN: 0, caN1: 1400, completed: false },
+            { id: 27, dateN: '01/11/2025', dateN1: '02/11/2024', caN: 0, caN1: 1350, completed: false },
+            { id: 28, dateN: '08/11/2025', dateN1: '09/11/2024', caN: 0, caN1: 1200, completed: false },
+            { id: 29, dateN: '15/11/2025', dateN1: '16/11/2024', caN: 0, caN1: 1150, completed: false },
+            { id: 30, dateN: '22/11/2025', dateN1: '23/11/2024', caN: 0, caN1: 1100, completed: false },
+            { id: 31, dateN: '29/11/2025', dateN1: '30/11/2024', caN: 0, caN1: 1050, completed: false },
+            { id: 32, dateN: '06/12/2025', dateN1: '07/12/2024', caN: 0, caN1: 1000, completed: false },
+            { id: 33, dateN: '13/12/2025', dateN1: '14/12/2024', caN: 0, caN1: 950,  completed: false },
+            { id: 34, dateN: '20/12/2025', dateN1: '21/12/2024', caN: 0, caN1: 1200, completed: false },
+            { id: 35, dateN: '27/12/2025', dateN1: '28/12/2024', caN: 0, caN1: 1300, completed: false },
+            { id: 36, dateN: '03/01/2026', dateN1: '04/01/2025', caN: 0, caN1: 1100, completed: false },
+            { id: 37, dateN: '10/01/2026', dateN1: '11/01/2025', caN: 0, caN1: 900,  completed: false },
+            { id: 38, dateN: '17/01/2026', dateN1: '18/01/2025', caN: 0, caN1: 850,  completed: false }
+        ];
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.getElementById('tabStats').classList.toggle('hidden', tabName !== 'stats');
+            document.getElementById('tabCA').classList.toggle('hidden', tabName !== 'ca');
+            
+            document.getElementById('btnTabStats').className = tabName === 'stats' 
+                ? "px-4 py-2 rounded-md bg-white text-blue-600 transition text-xs sm:text-sm font-semibold shadow-sm"
+                : "px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm";
+                
+            document.getElementById('btnTabCA').className = tabName === 'ca' 
+                ? "px-4 py-2 rounded-md bg-white text-blue-600 transition text-xs sm:text-sm font-semibold shadow-sm"
+                : "px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm";
+
+            if(tabName === 'ca') renderCASection();
+        }
+
+        function renderCASection() {
+            const completedItems = seasonData.filter(d => d.completed);
+            const totalPassedCount = completedItems.length;
+
+            const cumulN = completedItems.reduce((sum, d) => sum + d.caN, 0);
+            const cumulN1AtDate = completedItems.reduce((sum, d) => sum + d.caN1, 0);
+            const totalN1Season = seasonData.reduce((sum, d) => sum + d.caN1, 0);
+
+            const diffCumul = cumulN - cumulN1AtDate;
+            const pctCumul = cumulN1AtDate > 0 ? ((diffCumul / cumulN1AtDate) * 100).toFixed(1) : 0;
+            const seasonCompletionPct = ((totalPassedCount / 38) * 100).toFixed(0);
+
+            // Remplissage du bandeau d'avancement
+            document.getElementById('kpiCumulN').innerText = `${cumulN.toLocaleString('fr-FR')} €`;
+            document.getElementById('kpiCumulN1').innerText = `${cumulN1AtDate.toLocaleString('fr-FR')} €`;
+            document.getElementById('kpiTotalN1').innerText = `${totalN1Season.toLocaleString('fr-FR')} €`;
+            document.getElementById('kpiProgressText').innerText = `${totalPassedCount} / 38 dates (${seasonCompletionPct}%)`;
+            document.getElementById('kpiProgressBar').style.width = `${seasonCompletionPct}%`;
+
+            const badgeCumul = document.getElementById('kpiBadgeCumul');
+            if (diffCumul >= 0) {
+                badgeCumul.className = "text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 flex items-center gap-1";
+                badgeCumul.innerHTML = `<i class="fas fa-arrow-up"></i> +${pctCumul}% (+${diffCumul.toLocaleString('fr-FR')} €)`;
+            } else {
+                badgeCumul.className = "text-xs font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-700 flex items-center gap-1";
+                badgeCumul.innerHTML = `<i class="fas fa-arrow-down"></i> ${pctCumul}% (${diffCumul.toLocaleString('fr-FR')} €)`;
+            }
+
+            // Génération des 38 cartes
+            const cardsContainer = document.getElementById('caCardsContainer');
+            cardsContainer.innerHTML = '';
+
+            // Trouver la valeur max pour les jauges
+            const maxVal = Math.max(...seasonData.map(d => Math.max(d.caN, d.caN1)));
+
+            seasonData.forEach(item => {
+                const diff = item.caN - item.caN1;
+                const pct = item.caN1 > 0 ? ((diff / item.caN1) * 100).toFixed(1) : 0;
+                
+                const widthN = maxVal > 0 ? Math.round((item.caN / maxVal) * 100) : 0;
+                const widthN1 = maxVal > 0 ? Math.round((item.caN1 / maxVal) * 100) : 0;
+
+                let cardBg = "bg-white border-gray-200";
+                let statusBadge = `<span class="text-xxs px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-700 uppercase">Réalisé</span>`;
+
+                if (item.isNext) {
+                    cardBg = "bg-blue-50/50 border-blue-400 ring-2 ring-blue-300";
+                    statusBadge = `<span class="text-xxs px-2 py-0.5 rounded-full font-bold bg-blue-600 text-white uppercase animate-pulse">Prochaine Date</span>`;
+                } else if (!item.completed) {
+                    cardBg = "bg-gray-50/60 border-gray-200 opacity-80";
+                    statusBadge = `<span class="text-xxs px-2 py-0.5 rounded-full font-bold bg-gray-200 text-gray-600 uppercase">À venir</span>`;
+                }
+
+                let contentHTML = '';
+
+                if (item.completed) {
+                    const diffBadgeClass = diff >= 0 ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800";
+                    const diffSign = diff >= 0 ? "+" : "";
+
+                    contentHTML = `
+                        <div class="flex justify-between items-start mb-2 border-b border-gray-100 pb-2">
+                            <div>
+                                <span class="text-xs font-black text-gray-400 uppercase tracking-wider">Date #${item.id}</span>
+                                ${statusBadge}
+                            </div>
+                            <span class="text-xs font-extrabold px-2 py-0.5 rounded ${diffBadgeClass}">
+                                ${diffSign}${pct}%
+                            </span>
+                        </div>
+
+                        <!-- Comparatif N vs N-1 -->
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between items-center bg-blue-50 p-1.5 rounded">
+                                <span class="font-medium text-blue-900">N : <span class="font-normal text-blue-700">${item.dateN}</span></span>
+                                <span class="font-black text-blue-700 text-sm">${item.caN.toLocaleString('fr-FR')} €</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-gray-100 p-1.5 rounded text-gray-600">
+                                <span class="font-medium">N-1 : <span class="font-normal">${item.dateN1}</span></span>
+                                <span class="font-bold">${item.caN1.toLocaleString('fr-FR')} €</span>
+                            </div>
+                        </div>
+
+                        <!-- Barres comparatives visuelles -->
+                        <div class="mt-3 space-y-1 pt-2 border-t border-gray-100">
+                            <div class="flex items-center gap-2 text-xxs">
+                                <span class="w-6 font-bold text-blue-600">N</span>
+                                <div class="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-blue-600 h-full rounded-full" style="width: ${widthN}%"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-xxs">
+                                <span class="w-6 font-bold text-gray-400">N-1</span>
+                                <div class="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-gray-400 h-full rounded-full" style="width: ${widthN1}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    contentHTML = `
+                        <div class="flex justify-between items-start mb-2 border-b border-gray-100 pb-2">
+                            <div>
+                                <span class="text-xs font-black text-gray-400 uppercase tracking-wider">Date #${item.id}</span>
+                                ${statusBadge}
+                            </div>
+                        </div>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between items-center p-1.5 rounded bg-white border border-dashed border-gray-200">
+                                <span class="font-medium text-gray-400">N : ${item.dateN}</span>
+                                <span class="text-gray-400 italic">À venir</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-gray-100 p-1.5 rounded text-gray-600">
+                                <span class="font-medium">Hist. N-1 : <span class="font-normal">${item.dateN1}</span></span>
+                                <span class="font-bold">${item.caN1.toLocaleString('fr-FR')} €</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border shadow-sm transition hover:shadow-md ${cardBg}`;
+                card.innerHTML = contentHTML;
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        window.onload = function() {
+            renderCASection();
+        };
+    </script>
+    <style>
+        .text-xxs { font-size: 0.65rem; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased text-gray-800">
+
+    <!-- Navigation Header -->
+    <nav class="bg-blue-600 text-white shadow-md sticky top-0 z-50 p-4">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                Au Casse-Croûte Puyfolais
+            </h1>
+            <div class="flex bg-blue-700 rounded-lg p-1 text-sm font-semibold w-full sm:w-auto justify-center gap-1">
+                <button id="btnTabStats" onclick="switchTab('stats')" class="px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm">
+                    <i class="fas fa-shopping-cart mr-1"></i>Ventes
+                </button>
+                <button id="btnTabCA" onclick="switchTab('ca')" class="px-4 py-2 rounded-md bg-white text-blue-600 transition text-xs sm:text-sm font-semibold shadow-sm">
+                    <i class="fas fa-chart-line mr-1"></i>CA
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container mx-auto p-3 sm:p-4 max-w-6xl mt-2">
+
+        <!-- ONGLET CA -->
+        <section id="tabCA" class="space-y-4">
+
+            <!-- BANDEAU D'AVANCEMENT DE LA SAISON -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 space-y-3">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-gray-100 pb-2">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-gray-500 flex items-center gap-2">
+                        <i class="fas fa-flag-checkered text-blue-500"></i> Bilan d'Avancement Saison
+                    </h2>
+                    <span id="kpiProgressText" class="text-xs font-bold bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full">
+                        0 / 38 dates
+                    </span>
+                </div>
+
+                <!-- Jauge d'avancement -->
+                <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
+                    <div id="kpiProgressBar" class="bg-blue-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+
+                <!-- Chiffres Clés -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <div class="bg-blue-50/70 p-3 rounded-lg border border-blue-100">
+                        <div class="text-xxs font-bold text-blue-600 uppercase">Cumul N (Réalisé à date)</div>
+                        <div id="kpiCumulN" class="text-lg sm:text-xl font-black text-blue-900">0 €</div>
+                        <div class="text-xxs text-blue-500 mt-0.5">Sur les dates effectuées</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xxs font-bold text-gray-500 uppercase">Cumul N-1 (Même Stade)</span>
+                            <span id="kpiBadgeCumul"></span>
+                        </div>
+                        <div id="kpiCumulN1" class="text-lg sm:text-xl font-black text-gray-700">0 €</div>
+                        <div class="text-xxs text-gray-400 mt-0.5">Comparatif même nb de dates</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div class="text-xxs font-bold text-gray-500 uppercase">Total Saison N-1 (Référence)</div>
+                        <div id="kpiTotalN1" class="text-lg sm:text-xl font-black text-gray-700">0 €</div>
+                        <div class="text-xxs text-gray-400 mt-0.5">Objectif global saison précédente</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRILLE DES 38 DATES -->
+            <div id="caCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <!-- Les cartes sont générées dynamiquement en JavaScript -->
+            </div>
+
+        </section>
+
+        <!-- ONGLET VENTES (Existant) -->
+        <section id="tabStats" class="space-y-4 hidden">
+            <div class="bg-white p-4 rounded-xl shadow-sm border text-center text-gray-500 text-sm">
+                Onglet Ventes (Vos données existantes de produits s'afficheront ici)
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>

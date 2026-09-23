@@ -3,9 +3,34 @@ let products = [];
 let emptyCategories = []; 
 let categoriesOrder = []; 
 let ventes = [];
+let currentTab = 'ventes';
+
+function switchTab(tabName) {
+    currentTab = tabName;
+    const tabs = { stats: document.getElementById('tabStats'), ca: document.getElementById('tabCA') };
+    const buttons = { stats: document.getElementById('btnTabStats'), ca: document.getElementById('btnTabCA') };
+
+    Object.keys(tabs).forEach(k => {
+        if(tabs[k]) {
+            if(k === tabName) tabs[k].classList.remove('hidden');
+            else tabs[k].classList.add('hidden');
+        }
+        if(buttons[k]) {
+            if(k === tabName) buttons[k].className = "px-4 py-2 rounded-md bg-white text-blue-600 transition text-xs sm:text-sm font-semibold shadow-sm";
+            else buttons[k].className = "px-4 py-2 rounded-md text-white hover:bg-blue-600 transition text-xs sm:text-sm";
+        }
+    });
+
+    if (tabName === 'stats') {
+        updateFilterCategoryOptions();
+        updateFilterProductOptions();
+    }
+    refreshActiveTab();
+}
 
 function refreshActiveTab() {
-    renderStats();
+    if (currentTab === 'stats') renderStats();
+    if (currentTab === 'ca') renderCA();
 }
 
 function onCategoryFilterChange() {
@@ -529,9 +554,10 @@ function getLastFirstJune() {
 async function initApp() {
     await DataManager.loadAllData();
 	document.getElementById('filterDateDebutS').value = getLastFirstJune();
-    renderStats();
-    updateFilterCategoryOptions();
-    updateFilterProductOptions();
+    switchTab('stats');
+//    renderStats();
+//    updateFilterCategoryOptions();
+//    updateFilterProductOptions();
 }
 
 // Lancement automatique au chargement du script
